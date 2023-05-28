@@ -11,6 +11,8 @@ public class LeaderboardText extends JTextArea {
     public LeaderboardText(ArrayList<Player> leaderboard) {
         this.setFont(new Font("Arial", Font.PLAIN, 15));
         this.setBackground(BACKGROUND_COLOR);
+
+        // Generate the text for the leaderboard
         if (leaderboard != null) {
             StringBuilder leaderboardText = new StringBuilder();
             for (int i = 0; i < leaderboard.size(); i++) {

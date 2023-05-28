@@ -12,6 +12,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class MenuPanel extends JPanel {
+    // Components
     private JButton startButton = new JButton("New Game");
     private SnakeFrame snakeFrame;
     private JButton exitButton = new JButton("Exit");
@@ -22,10 +23,12 @@ public class MenuPanel extends JPanel {
     public MenuPanel(SnakeFrame snakeFrame, Scoreboard scoreboard) {
         this.snakeFrame = snakeFrame;
         this.scoreboard = scoreboard;
+        // Setting up button actions
         startButton.addActionListener(e -> newGame());
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Display confirmation dialog before exiting
                 if (JOptionPane.showConfirmDialog(null, "Do you really want to exit the game?") == JOptionPane.OK_OPTION) {
                     System.exit(0);
                 }
@@ -34,8 +37,10 @@ public class MenuPanel extends JPanel {
         leaderboardButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Setting up leaderboard panel and exit button
                 JButton exitLeaderboard = new JButton("Quit");
                 exitLeaderboard.addActionListener(new ActionListener() {
+                    // Switch back to the menu panel when quitting leaderboard
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         snakeFrame.getContentPane().removeAll();
@@ -44,6 +49,7 @@ public class MenuPanel extends JPanel {
                         snakeFrame.getContentPane().repaint();
                     }
                 });
+                // Switching to the leaderboard panel
                 snakeFrame.getContentPane().removeAll();
                 snakeFrame.getContentPane().add(new HeaderText("LEADERBOARD", 30));
                 snakeFrame.getContentPane().add(new LeaderboardText(scoreboard.getLeaderboard()));
@@ -53,6 +59,7 @@ public class MenuPanel extends JPanel {
                 snakeFrame.repaint();
             }
         });
+        // Configuring component alignment
         gameLogo.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
         add(gameLogo);
         add(headerText);
@@ -67,6 +74,7 @@ public class MenuPanel extends JPanel {
     }
 
     private void newGame() {
+        // Prompting for player name
         String playerName;
         do {
             playerName = JOptionPane.showInputDialog("Enter player name (max 20 characters): ");
@@ -74,21 +82,27 @@ public class MenuPanel extends JPanel {
                 return;
             }
         } while (playerName.length() > 20 || playerName.equals(""));
+
+        // Creating player and necessary components for the game
         Player player = new Player(playerName);
         ScoreText scoreText = new ScoreText(player.getName());
         HeaderText headerText = new HeaderText("Press ENTER to start the game", 30);
         HeaderText bottomText = new HeaderText("",20);
         GamePanel gamePanel = new GamePanel(player, scoreText, bottomText, snakeFrame, scoreboard);
 
+        // Switching to the game panel
         snakeFrame.getContentPane().removeAll();
         snakeFrame.getContentPane().add(headerText);
         snakeFrame.getContentPane().add(gamePanel);
         snakeFrame.repaint();
         snakeFrame.setVisible(true);
+
+        // Setting up key listeners
         snakeFrame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    // Starting the game on ENTER key press
                     snakeFrame.removeKeyListener(this);
                     snakeFrame.getContentPane().remove(headerText);
                     snakeFrame.getContentPane().add(scoreText, 0);

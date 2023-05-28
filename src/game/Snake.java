@@ -13,7 +13,9 @@ public class Snake {
     private ArrayList<Point> body = new ArrayList<>();
 
 
+
     public Snake(Point headPosition) {
+        // Constructor for the Snake class
         body.add(headPosition);
         body.add(new Point(headPosition.x - 1, headPosition.y));
         body.add(new Point(headPosition.x - 2, headPosition.y));
@@ -71,10 +73,13 @@ public class Snake {
     public Direction getCurrentDirection() {
         return this.currentDirection;
     }
+    // Returns the current direction of the snake
     public Direction getNextDirection() {
         return this.nextDirection;
     }
+    // Returns the next direction of the snake
     public boolean setNextDirection(Direction inputDirection) {
+        // Sets the next direction of the snake if it is a valid direction
         if ((inputDirection.ordinal() % 2) != (this.currentDirection.ordinal() % 2)) {
             this.nextDirection = inputDirection;
             return true;
@@ -84,10 +89,12 @@ public class Snake {
         }
     }
     private Point getNewHead() {
+        // Returns the position of the new head of the snake based on its current direction
         Point head = new Point(getHead());
         return modifyPoint(head, currentDirection);
     }
     private Point modifyPoint(Point point, Direction direction){
+        // Modifies the given point based on the specified direction
         switch (direction) {
             case UP -> point.y--;
             case DOWN -> point.y++;
@@ -99,7 +106,9 @@ public class Snake {
     public Point getHead() {
         return body.get(0);
     }
+    // Returns the position of the snake's head
     public ArrayList<Point> getBody() {
+        // Returns the array list representing the snake's body
         return body;
     }
 }

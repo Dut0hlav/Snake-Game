@@ -13,17 +13,17 @@ import static utils.Constants.*;
 
 
 public class GamePanel extends JPanel {
-//    JFrame snakeFrame = (JFrame) SwingUtilities.getWindowAncestor(GamePanel.this);
-    private GameTile[][] gameGrid = new GameTile[ROWS][COLS];
+    private GameTile[][] gameGrid = new GameTile[ROWS][COLS]; // Represents the game grid
     SnakeFrame snakeFrame;
-    private Snake snake = new Snake(new Point(ROWS / 2, COLS / 2));
-    private ArrayList<Food> foodObjects = new ArrayList<Food>();
-    private Player player;
-    private ScoreText scoreText;
-    private HeaderText bottomText;
-    private Scoreboard scoreboard;
+    private Snake snake = new Snake(new Point(ROWS / 2, COLS / 2)); // The snake object
+    private ArrayList<Food> foodObjects = new ArrayList<Food>(); // List of food objects
+    private Player player;// Current player
+    private ScoreText scoreText; // Text component for displaying the score
+    private HeaderText bottomText; // Text component for displaying additional information
+    private Scoreboard scoreboard; // Counter for total moves in the game
     private int allMoves;
     public GamePanel(Player player, ScoreText scoreText, HeaderText bottomText, SnakeFrame parentFrame, Scoreboard scoreboard) {
+        // Constructor for the game panel
         this.scoreboard = scoreboard;
         this.player = player;
         this.scoreText = scoreText;
@@ -31,6 +31,8 @@ public class GamePanel extends JPanel {
         this.snakeFrame = parentFrame;
         setLayout(new GridLayout(ROWS, COLS));
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
+
+        // Initialize the game grid and add GameTile objects to the panel
         for (int ycor = 0; ycor < ROWS; ycor++) {
             for (int xcor = 0; xcor < COLS; xcor++) {
                 GameTile tile = new GameTile(TILE_COLOR);
@@ -40,15 +42,18 @@ public class GamePanel extends JPanel {
         }
     }
     public GameTile getTile(int row, int col) {
+        // Returns the game tile at the specified row and column
         return gameGrid[col][row];
     }
 
     private void paintGame() {
+        // Updates the colors of the game grid to reflect the current game state
         for (int ycor = 0; ycor < ROWS; ycor++) {
             for (int xcor = 0; xcor < COLS; xcor++){
                 gameGrid[xcor][ycor].setColor(TILE_COLOR);
             }
         }
+        // Set the color of GameTiles based on the positions of snake and food objects
         for (Food food : foodObjects) {
             Point foodPlace = food.getPlace();
             gameGrid[foodPlace.x][foodPlace.y].setColor(food.getColor());
@@ -66,7 +71,7 @@ public class GamePanel extends JPanel {
     }
 
     public void startGame() {
-        // start timers etc.
+        // Start the game and initialize timers
         System.out.println("Game started");
         paintGame();
         Timer moveTimer = new Timer();
@@ -92,6 +97,7 @@ public class GamePanel extends JPanel {
 
     }
     public void updateSnakeDirection(KeyEvent e) {
+        // Update the snake's direction based on the pressed key
         switch(e.getKeyCode()) {
             case KeyEvent.VK_UP -> snake.setNextDirection(Constants.Direction.UP);
             case KeyEvent.VK_DOWN -> snake.setNextDirection(Constants.Direction.DOWN);
@@ -100,6 +106,7 @@ public class GamePanel extends JPanel {
         }
     }
     private void createFood(){
+        // Create and remove food objects based on the number of moves
         if ((allMoves % BasicFood.expirationMoves) == 0){
             foodObjects.removeIf(food -> food instanceof BasicFood);
             if ((allMoves % BasicFood.recurrenceMoves) == 0) {
@@ -116,6 +123,7 @@ public class GamePanel extends JPanel {
         }
     }
     private void resolveSnakeFoodCollision() {
+        // Handle snake-food collisions and update the game score
         for (Food food : foodObjects) {
             if (food.getPlace().equals(snake.getHead())) {
                 snake.extendBody(food.getNewBlocks());
@@ -127,6 +135,7 @@ public class GamePanel extends JPanel {
         }
     }
     private boolean isSnakeBodyCollision() {
+        // Check if the snake's head collides with its body
         Point head = snake.getHead();
         ArrayList<Point> body = snake.getBody();
         for (int i = 1; i < body.size(); i++){
@@ -137,6 +146,7 @@ public class GamePanel extends JPanel {
         return false;
     }
     private void endGame() {
+        // End the game and update the scoreboard and UI
         scoreText.endGame();
         scoreboard.addScore(player);
         bottomText.setText("Your score is " + player.getGameScore() + ". Press ENTER to quit.");
